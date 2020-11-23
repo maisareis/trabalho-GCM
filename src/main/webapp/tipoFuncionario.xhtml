@@ -1,0 +1,93 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewParam name="tipoFuncionarioId" value="#{tipoFuncionarioBean.tipoFuncionario.idtipoFuncionario}"/>
+        <f:viewAction action="#{tipoFuncionarioBean.carregarTipoFuncionarioPeloId}" if="#{param.tipoFuncionarioId != null}"/>        
+    </f:metadata>
+
+    <ui:define name="content">
+
+        <h2 class="page-header">Gerenciar Tipo Funcinário</h2>
+        <br/>
+        <h:form id="formPrincipal">
+            <p:messages id="messages" showDetail="true" closable="true" />
+
+            <div align="center">
+                <p:dataTable var="lista" value="#{tipoFuncionarioBean.tipoFuncionarios}"
+                             id="tabela" emptyMessage="Nenhum registro encontrado"
+                             paginatorTemplate="{RowsPerPageDropdown} {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,25,50,100,9999" style="width:100%">
+
+                    <p:column headerText="Código" sortBy="#{lista.idtipoFuncionario}" filterBy="#{lista.idtipoFuncionario}">
+                        <h:outputText value="#{lista.idtipoFuncionario}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{lista.nomeTipoFuncionario}" filterBy="#{lista.nomeTipoFuncionario}">
+                        <h:outputText value="#{lista.nomeTipoFuncionario}" />
+                    </p:column>
+                    <p:column headerText="Opções" exportable="false">
+                        <center>
+                            <p:commandButton icon="ui-icon-pencil" value="Editar" onclick="PF('record').show();" update="formPrincipal:panelRecord" process="@this"> 
+                                <f:setPropertyActionListener target="#{tipoFuncionarioBean.tipoFuncionario}"
+                                                             value="#{lista}" />
+                            </p:commandButton>
+
+                            <p:commandButton icon="ui-icon-trash" value="Deletar" action="#{tipoFuncionarioBean.remover(lista)}" process="@this" update="@form"/> 
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+                <p:column>
+                    <p:commandButton icon="ui-icon-plus" value="Novo" onclick="PF('record').show();" update="formPrincipal:panelRecord" action="#{tipoFuncionarioBean.novo}">  
+                    </p:commandButton> 
+                </p:column>
+
+            </div>
+
+            <div align="center">
+                <h3>Exportar dados da página</h3>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/excel.png" width="24"/>
+                    <p:dataExporter type="xls" target="tabela" fileName="arq" />
+                </h:commandLink>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/pdf.png" width="24"/>
+                    <p:dataExporter type="pdf" target="tabela" fileName="arq"/>
+                </h:commandLink>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/csv.png" width="24"/>
+                    <p:dataExporter type="csv" target="tabela" fileName="arq" />
+                </h:commandLink>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/xml.png" width="24"/>
+                    <p:dataExporter type="xml" target="tabela" fileName="arq" />
+                </h:commandLink>
+
+            </div>
+
+            <p:dialog header="Novo" widgetVar="record" modal="false" focus="tipofuncionario">
+
+
+                <p:panelGrid id="panelRecord" columns="2"> 
+                    <p:outputLabel value="Nome:" for="tipofuncionario"/>
+                    <p:inputText id="tipofuncionario" value="#{tipoFuncionarioBean.tipoFuncionario.nomeTipoFuncionario}" />
+                </p:panelGrid>
+
+                <br/>
+                <p:commandButton value="Salvar"  
+                                 actionListener="#{tipoFuncionarioBean.gravar}" onclick="record.hide()" alt="Record"/> 
+            </p:dialog>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
