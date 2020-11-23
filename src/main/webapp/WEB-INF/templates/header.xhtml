@@ -1,0 +1,32 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    <header>
+        <h1>Hospital</h1>
+
+        <h:panelGrid columns="2">
+            <h:form rendered="#{usuarioLogado != null}" style="position:absolute; right: 10px;"/>  
+        </h:panelGrid>
+
+        <h:form rendered="#{usuarioLogado != null}">  
+            <p:menubar>
+                <p:menuitem value="Início" icon="ui-icon-home" url="faces/index.xhtml" />
+                <p:submenu label="Gerenciar" icon="ui-icon-gear">
+                    <p:menuitem value="Tipo Funcionário" icon="ui-icon-suitcase" url="faces/tipoFuncionario.xhtml"/>
+                    <p:menuitem value="Funcionários" icon="ui-icon-bookmark" url="faces/funcionario.xhtml"/>
+                    <p:menuitem value="Pacientes" icon="ui-icon-person" url="faces/paciente.xhtml"/>
+                    <p:menuitem value="Prontuário" icon="ui-icon-folder-open" url="faces/prontuario.xhtml"/>
+                </p:submenu>
+                <p:submenu label="Relatórios" icon="ui-icon-print">
+                    <p:menuitem value="Consulta por Usuário" icon="ui-icon-print" url="faces/consulta_usuarios.xhtml"/>
+                    <p:menuitem value="Consulta por Quarto" icon="ui-icon-print" url="faces/consulta_quarto.xhtml"/>
+                    <p:menuitem value="Relatório" icon="ui-icon-print" url="faces/relatorio.xhtml"/>
+                </p:submenu>
+                <p:menuitem value="Logout" action="#{loginBean.deslogar}" icon="fa fa-fw fa-sign-out"/>
+            </p:menubar>
+        </h:form>
+    </header>
+</ui:composition>
