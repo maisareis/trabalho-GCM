@@ -1,0 +1,32 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="content">
+
+        <p:messages globalOnly="true" />
+
+        <h:form id="login">
+            <p:fieldset legend="Login">
+                <h:panelGrid columns="3">
+
+                    <p:outputLabel value="Email:" for="email" />
+                    <p:inputText id="email" value="#{loginBean.usuario.email}" required="true">
+                        <f:passThroughAttribute name="type" value="email" />
+                    </p:inputText>
+                    <p:message for="email" id="messageEmail" />
+
+                    <p:outputLabel value="Senha:" for="senha" />
+                    <p:password id="senha" value="#{loginBean.usuario.senha}" feedback="true"  required="true" />
+                    <p:message for="senha" id="messageSenha" />
+
+                    <p:commandButton value="Efetue Login" action="#{loginBean.efetuaLogin}" update="@form" process="@form" />
+                </h:panelGrid>
+            </p:fieldset>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
