@@ -21,7 +21,7 @@ import javax.inject.Named;
 
 /**
  *
- * @author maisa
+ * @author claud
  */
 @Named
 @ViewScoped
@@ -109,7 +109,6 @@ public class FuncinarioBean implements Serializable {
     public String gravar() {
         if (this.funcionario.getIdFuncionario() == null) {
             this.enddao.adiciona(this.enderecos);
-            System.out.println("Endereço ID " + this.enderecos.getIdEndereco());
             this.gravarTipoFuncionario();
             this.funcionario.setEnderecosidEnderecos(this.enderecos);
             this.fundao.adiciona(this.funcionario);
@@ -151,6 +150,11 @@ public class FuncinarioBean implements Serializable {
         this.funcionario = funcionario;
         this.enderecos = enddao.buscarPorId(funcionario.getEnderecosidEnderecos().getIdEndereco());
 
+    }
+
+    public void novo() {
+        this.funcionario = new Funcionarios();
+        this.enderecos = new Enderecos();
     }
 
 }
