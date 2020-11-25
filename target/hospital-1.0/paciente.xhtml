@@ -1,0 +1,160 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewParam name="funcionarioId" value="#{pacienteBean.pacientes.idPaciente}"/>
+        <f:viewAction action="#{pacienteBean.carregarPacientesPeloId()}" if="#{param.pacienteId!= null}"/>        
+    </f:metadata>
+
+
+    <ui:define name="content">
+
+        <h2 class="page-header">Gerenciar De Pacientes</h2>
+        <br/>
+        <h:form id="formPaciente">
+            <p:messages id="messages" showDetail="true" closable="true" />
+
+            <div align="center">
+                <p:dataTable var="listaPac" value="#{pacienteBean.pacienteList}"
+                             id="tabela" emptyMessage="Nenhum registro encontrado"
+                             paginatorTemplate="{RowsPerPageDropdown} {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,25,50,100,9999" style="width:100%">
+
+                    <p:column headerText="Código" sortBy="#{listaPac.idPaciente}" filterBy="#{listaPac.idPaciente}">
+                        <h:outputText value="#{listaPac.idPaciente}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{listaPac.nomePaciente}" filterBy="#{listaPac.nomePaciente}">
+                        <h:outputText value="#{listaPac.nomePaciente}" />
+                    </p:column>
+                    <p:column headerText="CPF" sortBy="#{listaPac.cpf}" filterBy="#{listaPac.cpf}">
+                        <p:outputLabel value="#{listaPac.cpf}"/>                        
+                    </p:column>
+                    <p:column headerText="RG" sortBy="#{listaPac.sexo}" filterBy="#{listaPac.sexo}">
+                        <p:outputLabel value="#{listaPac.sexo}"/>                        
+                    </p:column>
+                    <p:column headerText="Data" sortBy="#{listaPac.dataNascimento.time}" filterBy="#{listaPac.dataNascimento.time}">
+                        <p:outputLabel value="#{listaPac.dataNascimento.time}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/São_Paulo"/>
+
+                        </p:outputLabel>                        
+                    </p:column>
+
+                    <p:column headerText="Opções" exportable="false">
+                        <center>
+                            <p:commandButton icon="ui-icon-pencil" value="Editar" onclick="PF('record').show();" update="formPaciente:panelRecord" process="@this"> 
+                                <f:setPropertyActionListener target="#{pacienteBean.pacientes}"
+                                                             value="#{listaPac}" />
+                            </p:commandButton>
+
+                            <p:commandButton icon="ui-icon-trash" value="Deletar" action="#{pacienteBean.remover(listaPac)}" process="@this" update="tabela"/>
+
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+                <p:column>
+                    <p:commandButton icon="ui-icon-plus" value="Novo" onclick="PF('record').show();" action="#{pacienteBean.novo}" 
+                                     update="formPaciente:panelRecord" process="@this">  
+                    </p:commandButton> 
+                </p:column>
+
+            </div>
+
+            <div align="center">
+                <h3>Exportar dados da página</h3>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/excel.png" width="24"/>
+                    <p:dataExporter type="xls" target="tabela" fileName="arq" />
+                </h:commandLink>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/pdf.png" width="24"/>
+                    <p:dataExporter type="pdf" target="tabela" fileName="arq"/>
+                </h:commandLink>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/csv.png" width="24"/>
+                    <p:dataExporter type="csv" target="tabela" fileName="arq" />
+                </h:commandLink>
+
+                <h:commandLink>
+                    <p:graphicImage name="images/exports/xml.png" width="24"/>
+                    <p:dataExporter type="xml" target="tabela" fileName="arq" />
+                </h:commandLink>
+
+            </div>
+
+
+
+            <p:dialog header="Novo" widgetVar="record" modal="true" focus="paciente">
+
+
+                <p:panelGrid id="panelRecord" columns="2"> 
+                    <p:outputLabel for="paciente" value="Nome:"/>
+                    <p:inputText id="paciente" value="#{pacienteBean.pacientes.nomePaciente}"  />
+                    <p:outputLabel value="CPF:" for="cpf"/>
+                    <p:inputMask id="cpf" value="#{pacienteBean.pacientes.cpf}" mask="99999999999" placeholder="99999999999"/>
+
+                    <p:outputLabel for="sexo" value="Sexo:"/>
+                    <p:selectOneMenu id="sexo" value="#{pacienteBean.pacientes.sexo}">
+                        <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                        <f:selectItem itemLabel="Feminino" itemValue="F"/>
+                        <f:selectItem itemLabel="Outros" itemValue="O"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="sangue" value="Tipo Sanguineo"/>
+                    <p:selectOneMenu id="sangue" value="#{pacienteBean.pacientes.tipoSanguineo}">
+                        <f:selectItem itemLabel="O+" itemValue="O+"/>
+                        <f:selectItem itemLabel="O-" itemValue="O-"/>
+                        <f:selectItem itemLabel="AB+" itemValue="AB+"/>
+                        <f:selectItem itemLabel="AB-" itemValue="AB-"/>
+                        <f:selectItem itemLabel="A+" itemValue="A+"/>
+                        <f:selectItem itemLabel="A-" itemValue="A-"/>
+                        <f:selectItem itemLabel="B+" itemValue="B+"/>
+                        <f:selectItem itemLabel="B-" itemValue="B-"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="dataNas" value="Data de Nascimento" />
+                    <p:calendar id="dataNas" value="#{pacienteBean.pacientes.dataNascimento.time}"
+                                timeZone="America/Sao_Paulo" pattern="dd/MM/yyyy" mask="true"/>                    
+
+                    <p:outputLabel value="Logradouro" for="logradouro"/>
+                    <p:inputText id="logradouro" value="#{pacienteBean.enderecos.logradouro}"/>
+
+                    <p:outputLabel value="Localidade" for="localidade"/>
+                    <p:inputText id="localidade" value="#{pacienteBean.enderecos.localidade}"/>
+
+                    <p:outputLabel value="CEP" for="cep"/>
+                    <p:inputMask id="cep" value="#{pacienteBean.enderecos.cep}" mask="99999999"/>
+
+                    <p:outputLabel value="Complemento" for="complemneto"/>
+                    <p:inputText id="complemneto" value="#{pacienteBean.enderecos.complemento}"/>
+
+                    <p:outputLabel value="Numero" for="numero"/>
+                    <p:inputText id="numero" value="#{pacienteBean.enderecos.numero}" type="number"/>
+
+                    <p:outputLabel value="UF" for="uf"/>
+                    <p:inputMask id="uf" value="#{pacienteBean.enderecos.uf}" mask="aa" maxlength="2"/>
+
+                    <p:outputLabel value="Bairro" for="bairro"/>
+                    <p:inputText id="bairro" value="#{pacienteBean.enderecos.bairro}"/>
+
+                </p:panelGrid>
+
+                <br/>
+                <p:commandButton value="Salvar"  
+                                 actionListener="#{pacienteBean.gravar}" onclick="record.hide()" alt="Record"/> 
+            </p:dialog>
+
+        </h:form>
+
+
+
+    </ui:define>
+
+</ui:composition>
